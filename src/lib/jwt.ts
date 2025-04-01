@@ -55,7 +55,7 @@ export async function verifyToken(token: string) {
 export async function verifyRefreshToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, new TextEncoder().encode(REFRESH_SECRET));
-    return payload as { userId: string };
+    return payload as unknown as JWTPayload;
   } catch (error) {
     throw new Error('Invalid refresh token');
   }

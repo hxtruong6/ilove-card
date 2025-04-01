@@ -12,9 +12,9 @@ const registerSchema = z
     email: z.string().min(1, 'Email is required').email('Invalid email address'),
     password: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
+      .min(6, 'Password must be at least 6 characters')
       .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/,
         'Password must contain at least one uppercase letter, one lowercase letter, and one number'
       ),
     confirmPassword: z.string().min(1, 'Please confirm your password'),

@@ -8,10 +8,12 @@ import type { NextRequest } from 'next/server';
 const publicRoutes = [
   '/',
   '/login',
-  '/signup',
+  '/register',
+  // '/dashboard',
   '/api/auth/login',
-  '/api/auth/signup',
+  '/api/auth/register',
   '/api/auth/refresh',
+  '/landing',
 ];
 
 const isEnableRateLimiter = process.env.ENABLE_RATE_LIMITER === 'true';
@@ -27,8 +29,6 @@ export async function middleware(request: NextRequest) {
       return rateLimitResponse;
     }
   }
-  console.log('xxx middleware: ', request.nextUrl.pathname);
-
   const pathname = request.nextUrl.pathname;
 
   // Allow public routes
@@ -56,9 +56,11 @@ export async function middleware(request: NextRequest) {
       // TODO: Fetch user data from database using payload.userId
       const userData = {
         userId: payload.userId,
-        email: 'user@example.com', // Replace with actual user data
-        name: 'User Name', // Replace with actual user data
+        email: payload.email,
+        name: payload.name,
       };
+
+      console.log('xxx120 userData: ', userData);
 
       // Generate new tokens
       const tokens = await generateTokens(userData);

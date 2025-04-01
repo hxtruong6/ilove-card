@@ -1,4 +1,4 @@
-import { compare, hash } from 'bcrypt';
+import { compare, hash } from 'bcryptjs';
 
 const SALT_ROUNDS = 10;
 
@@ -27,12 +27,11 @@ export async function verifyPassword(password: string, hashedPassword: string): 
  * @returns True if the password meets requirements, false otherwise
  */
 export function validatePassword(password: string): boolean {
-  // Password must be at least 8 characters long and contain:
+  // Password must be at least 6 characters long and contain:
   // - At least one uppercase letter
   // - At least one lowercase letter
   // - At least one number
-  // - At least one special character
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
   return passwordRegex.test(password);
 }
 

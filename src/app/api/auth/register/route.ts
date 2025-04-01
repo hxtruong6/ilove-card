@@ -8,6 +8,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, password, name } = body;
 
+    console.log('xxx110 register: ', body);
+
     // Validate input
     if (!email || !password || !name) {
       return NextResponse.json({ error: 'Email, password and name are required' }, { status: 400 });
@@ -23,7 +25,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            'Password must be at least 8 characters long and contain uppercase, lowercase, number and special character',
+            'Password must be at least 6 characters long and contain uppercase, lowercase, number and special character',
         },
         { status: 400 }
       );
@@ -33,6 +35,8 @@ export async function POST(request: Request) {
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
+
+    console.log('xxx110 existingUser: ', existingUser);
 
     if (existingUser) {
       return NextResponse.json({ error: 'User already exists' }, { status: 409 });

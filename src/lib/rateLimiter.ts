@@ -9,12 +9,12 @@ const redis = new Redis({
 // Rate limit configurations
 const RATE_LIMITS = {
   login: {
-    points: 5,
+    points: 100,
     duration: 60 * 15, // 15 minutes
   },
   register: {
-    points: 3,
-    duration: 60 * 60, // 1 hour
+    points: 100,
+    duration: 60, // 1 hour
   },
   api: {
     points: 100,
