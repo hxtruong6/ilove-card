@@ -10,9 +10,7 @@ export default function Home() {
         <Heading as="h1" size="2xl">
           Welcome to iCard
         </Heading>
-        <Text fontSize="xl">
-          Create and share personalized festive trees with messages
-        </Text>
+        <Text fontSize="xl">Create and share personalized festive trees with messages</Text>
         <Button colorScheme="primary" size="lg">
           Get Started
         </Button>

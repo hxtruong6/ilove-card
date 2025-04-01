@@ -6,10 +6,58 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../app/generated/prisma"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  email         String          @unique
+  password      String
+  name          String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  trees         Tree[]
+  messages      Message[]
+  receivedTrees TreeRecipient[]
+}
+
+model Tree {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  theme       String          @default("default")
+  isPublic    Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  owner       User            @relation(fields: [ownerId], references: [id])
+  ownerId     String          @db.ObjectId
+  recipients  TreeRecipient[]
+  messages    Message[]
+}
+
+model TreeRecipient {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  tree      Tree     @relation(fields: [treeId], references: [id])
+  treeId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([treeId, userId])
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tree      Tree     @relation(fields: [treeId], references: [id])
+  treeId    String   @db.ObjectId
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  String   @db.ObjectId
 }
