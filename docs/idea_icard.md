@@ -60,26 +60,26 @@ Your choice of Next.js, Chakra UI v3, Prisma, and MongoDB is excellent for an MV
 #### Sample Data Model (Prisma Schema)
 
 ```prisma
-model User {
+model Users {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   email     String   @unique
   name      String
   trees     Tree[]
 }
 
-model Tree {
+model Trees {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   ownerId   String   @db.ObjectId
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     Users     @relation(fields: [ownerId], references: [id])
   theme     String   @default("christmas")
-  messages  Message[]
+  messages  Messages[]
   isPublic  Boolean  @default(false)
 }
 
-model Message {
+model Messages {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   treeId    String   @db.ObjectId
-  tree      Tree     @relation(fields: [treeId], references: [id])
+  tree      Trees     @relation(fields: [treeId], references: [id])
   author    String
   content   String
   imageUrls String[]

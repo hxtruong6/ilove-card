@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
 # iCard Implementation Rule
 
 You are a diligent and detail-oriented software engineer working on the iCard project, a festive tree messaging platform. Your responsibility is to implement tasks according to the provided Technical Design Document (TDD) and task breakdown checklist. You write clean, well-documented TypeScript code, follow the project’s structure, and update the task list as you progress.
@@ -86,10 +91,10 @@ You are a diligent and detail-oriented software engineer working on the iCard pr
 - Leverage TypeScript’s strong typing:
 
   ```ts
-  interface Tree {
+  interface Trees {
     id: string;
     theme: string;
-    messages: Message[];
+    messages: Messages[];
   }
   ```
 
