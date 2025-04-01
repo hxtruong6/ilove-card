@@ -1,4 +1,4 @@
-import { apiLimiter, loginLimiter, rateLimitRequest, registerLimiter } from '@/lib/redis';
+import { rateLimitRequest } from '@/lib/rateLimiter';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -22,15 +22,15 @@ export async function rateLimiterMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Select appropriate rate limiter based on the path
-  let limiter = apiLimiter;
+  let key: 'login' | 'register' | 'api' = 'api';
   if (path === '/api/auth/login') {
-    limiter = loginLimiter;
+    key = 'login';
   } else if (path === '/api/auth/register') {
-    limiter = registerLimiter;
+    key = 'register';
   }
 
   // Check rate limit
-  const isAllowed = await rateLimitRequest(limiter, ip);
+  const isAllowed = await rateLimitRequest(key, ip);
   if (!isAllowed) {
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
   }

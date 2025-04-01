@@ -14,17 +14,20 @@ const publicRoutes = [
   '/api/auth/refresh',
 ];
 
+const isEnableRateLimiter = process.env.ENABLE_RATE_LIMITER === 'true';
+
 /**
  * Middleware function to handle authentication and rate limiting
  */
 export async function middleware(request: NextRequest) {
   // Apply rate limiting to API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+  if (isEnableRateLimiter && request.nextUrl.pathname.startsWith('/api/')) {
     const rateLimitResponse = await rateLimiterMiddleware(request);
     if (rateLimitResponse) {
       return rateLimitResponse;
     }
   }
+  console.log('xxx middleware: ', request.nextUrl.pathname);
 
   const pathname = request.nextUrl.pathname;
 

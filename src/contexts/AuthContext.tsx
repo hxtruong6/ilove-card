@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -6,6 +6,7 @@ interface User {
   id: string;
   name: string;
   email: string;
+  avatar: string;
 }
 
 interface AuthContextType {
