@@ -6,9 +6,12 @@ This document breaks down the implementation tasks for the iCard project based o
 
 ### Initial Setup
 
-- [ ] Task 1: Initialize Next.js project with TypeScript
-- [ ] Task 2: Set up Chakra UI v3 and theme configuration
-- [ ] Task 3: Configure Prisma with PostgreSQL
+- [x] Task 1: Initialize Next.js project with TypeScript (Completed)
+- [x] Task 2: Set up Chakra UI v3 and theme configuration (Completed)
+  - [x] Configure theme system with defineConfig and createSystem
+  - [x] Set up color tokens and semantic tokens
+  - [x] Create basic UI components
+- [ ] Task 3: Configure Prisma with MongoDB
 - [ ] Task 4: Set up ESLint and Prettier
 - [ ] Task 5: Configure Git hooks with Husky
 - [ ] Task 6: Set up CI/CD pipeline with GitHub Actions
@@ -174,7 +177,7 @@ This document breaks down the implementation tasks for the iCard project based o
 - [ ] Task 43: Set up Vercel deployment
   - [ ] Configure production environment
   - [ ] Set up staging environment
-- [ ] Task 44: Configure PostgreSQL database
+- [ ] Task 44: Configure MongoDb database
   - [ ] Set up production database
   - [ ] Configure database backups
 - [ ] Task 45: Set up Redis caching
