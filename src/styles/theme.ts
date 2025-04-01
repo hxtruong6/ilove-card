@@ -1,17 +1,10 @@
-import { createSystem, defaultBaseConfig, defaultConfig, defineConfig } from '@chakra-ui/react';
+import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react';
 
 const customConfig = defineConfig({
-  // strictTokens: true,
   cssVarsRoot: ':where(:root, :host)',
   cssVarsPrefix: 'ck',
   theme: {
     tokens: {
-      sizes: {
-        4: { value: '1rem' },
-        8: { value: '2rem' },
-        12: { value: '3rem' },
-        16: { value: '4rem' },
-      },
       colors: {
         brand: {
           primary: { value: '#FF69B4' },
@@ -78,6 +71,4 @@ const customConfig = defineConfig({
   },
 });
 
-// export const system = createSystem(customConfig);
-// export const system = createSystem(defaultBaseConfig, customConfig);
-export const system = createSystem(defaultConfig, customConfig);
+export const theme = createSystem(defaultConfig, customConfig);
