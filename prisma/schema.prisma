@@ -18,7 +18,7 @@ model User {
   id            String          @id @default(auto()) @map("_id") @db.ObjectId
   email         String          @unique
   password      String
-  name          String?
+  name          String
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   trees         Tree[]
@@ -30,7 +30,7 @@ model Tree {
   id          String          @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
-  theme       String          @default("default")
+  theme       String          @default("christmas")
   isPublic    Boolean         @default(false)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -38,6 +38,9 @@ model Tree {
   ownerId     String          @db.ObjectId
   recipients  TreeRecipient[]
   messages    Message[]
+
+  @@index([ownerId])
+  @@index([isPublic])
 }
 
 model TreeRecipient {
@@ -49,15 +52,21 @@ model TreeRecipient {
   createdAt DateTime @default(now())
 
   @@unique([treeId, userId])
+  @@index([treeId])
+  @@index([userId])
 }
 
 model Message {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   content   String
+  imageUrls String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tree      Tree     @relation(fields: [treeId], references: [id])
   treeId    String   @db.ObjectId
   sender    User     @relation(fields: [senderId], references: [id])
   senderId  String   @db.ObjectId
+
+  @@index([treeId])
+  @@index([senderId])
 }

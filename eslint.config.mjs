@@ -17,6 +17,8 @@ export default [
       '**/app/generated/**',
       '**/prisma/generated/**',
       '**/prisma/migrations/**',
+      'commitlint.config.js',
+      'eslint.config.mjs',
     ],
     languageOptions: {
       ecmaVersion: 'latest',
