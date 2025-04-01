@@ -1,10 +1,7 @@
 import { hashPassword, validateEmail, validatePassword } from '@/lib/auth';
 import { generateTokens, setAuthCookies } from '@/lib/jwt';
+import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-
-import { PrismaClient } from '../../../../app/generated/prisma';
-
-const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
