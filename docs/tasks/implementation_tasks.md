@@ -40,17 +40,23 @@ This document breaks down the implementation tasks for the iCard project based o
 
 ### Backend Authentication
 
-- [ ] Task 11: Implement JWT authentication system
-  - [ ] Create JWT utility functions
-  - [ ] Set up JWT middleware
-  - [ ] Implement refresh token mechanism
-- [ ] Task 12: Create authentication API endpoints
-  - [ ] Implement /api/auth/register
-  - [ ] Implement /api/auth/login
-  - [ ] Implement /api/auth/logout
-  - [ ] Implement /api/auth/me
-- [ ] Task 13: Implement password hashing with bcrypt
-- [ ] Task 14: Set up rate limiting with Redis
+- [x] Task 11: Implement JWT authentication system
+  - [x] Create JWT utility functions
+  - [x] Set up JWT middleware
+  - [x] Implement refresh token mechanism
+- [x] Task 12: Create authentication API endpoints
+  - [x] Implement /api/auth/register
+  - [x] Implement /api/auth/login
+  - [x] Implement /api/auth/logout
+  - [x] Implement /api/auth/me
+- [x] Task 13: Implement password hashing with bcrypt
+  - [x] Create password hashing utility
+  - [x] Add password verification function
+  - [x] Implement password validation
+- [x] Task 14: Set up rate limiting with Redis
+  - [x] Configure Redis client
+  - [x] Implement rate limiters for auth endpoints
+  - [x] Add rate limiting middleware
 
 ### Frontend Authentication
 
