@@ -74,12 +74,12 @@ This document breaks down the implementation tasks for the iCard project based o
 - [x] **Task 16: Implement authentication state management (Completed)**
   - [x] Set up `AuthContext` in `/lib/auth.ts`
   - [x] Create `useAuth` hook for components
-- [ ] **Task 17: Add protected route middleware (High Priority)**
-  - [ ] Create `withAuth` HOC in `/lib/auth.ts`
-  - [ ] Protect `/dashboard` and `/tree/[id]` routes
-- [ ] **Task 18: Implement authentication error handling**
-  - [ ] Add error states to `LoginForm` and `RegisterForm`
-  - [ ] Display toast notifications for errors (e.g., "Invalid credentials")
+- [x] **Task 17: Add protected route middleware (Completed)**
+  - [x] Create `withAuth` HOC in `/lib/auth.ts`
+  - [x] Protect `/dashboard` and `/tree/[id]` routes
+- [x] **Task 18: Implement authentication error handling (Completed)**
+  - [x] Add error states to `LoginForm` and `RegisterForm`
+  - [x] Display toast notifications for errors (e.g., "Invalid credentials")
 
 ## Tree Management System
 
@@ -102,7 +102,7 @@ This document breaks down the implementation tasks for the iCard project based o
 
 ### Frontend Tree Components
 
-- [ ] **Task 22: Create tree management components**
+- [ ] **Task 22: Create tree management components (Completed)**
   - [ ] `TreeList` in `/components/tree/TreeList.tsx` - Display user's trees
   - [ ] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree
   - [ ] `TreeCard` in `/components/tree/TreeCard.tsx` - Tree preview card

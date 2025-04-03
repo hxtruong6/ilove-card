@@ -8,7 +8,6 @@ import type { NextRequest } from 'next/server';
 
 // Routes that don't require authentication
 const publicRoutes = [
-  '/',
   '/login',
   '/register',
   '/api/auth/login',
@@ -30,6 +29,21 @@ const isEnableRateLimiter = process.env.ENABLE_RATE_LIMITER === 'true';
  */
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  // Special handling for root path
+  if (pathname === '/') {
+    const accessToken = request.cookies.get('accessToken')?.value;
+    if (accessToken) {
+      try {
+        await verifyToken(accessToken);
+        // If token is valid, redirect to dashboard
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      } catch (error) {
+        // Token is invalid, continue to landing page
+      }
+    }
+    return NextResponse.next();
+  }
 
   // Apply rate limiting to API routes
   if (isEnableRateLimiter && pathname.startsWith('/api/')) {
