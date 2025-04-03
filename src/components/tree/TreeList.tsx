@@ -10,7 +10,9 @@ import { TreeCard } from './TreeCard';
  * Fetches the user's trees from the API
  */
 async function fetchTrees(): Promise<Tree[]> {
-  const response = await fetch('/api/trees');
+  const response = await fetch('/api/trees', {
+    credentials: 'include',
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch trees');
   }

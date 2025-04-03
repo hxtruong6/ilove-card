@@ -19,6 +19,7 @@ model User {
   email         String          @unique
   password      String
   name          String
+  avatar        String          @default("https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Round&hairColor=Auburn&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Hearts&eyebrowType=Default&mouthType=Default&skinColor=Light")
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   trees         Tree[]

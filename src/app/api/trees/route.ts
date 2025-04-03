@@ -15,8 +15,10 @@ const createTreeSchema = z.object({
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
+    console.log('API Route - Session:', session);
 
     if (!session?.user?.id) {
+      console.log('API Route - No session or user ID found');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

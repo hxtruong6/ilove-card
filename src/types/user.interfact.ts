@@ -5,4 +5,7 @@ export interface User {
   avatar: string;
 }
 
-export interface UserSession extends User {}
+export interface UserSession extends User {
+  accessToken: string;
+  refreshToken: string;
+}

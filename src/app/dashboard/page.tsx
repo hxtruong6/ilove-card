@@ -8,6 +8,8 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
 
+  console.log('xxx101 user', user);
+
   const handleCreateTree = () => {
     router.push('/dashboard/trees/new');
   };
