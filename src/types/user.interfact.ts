@@ -1,11 +1,15 @@
 export interface User {
   id: string;
-  name: string;
   email: string;
-  avatar: string;
+  name: string;
+  avatar?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-export interface UserSession extends User {
-  accessToken: string;
-  refreshToken: string;
+export interface UserSession {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
 }

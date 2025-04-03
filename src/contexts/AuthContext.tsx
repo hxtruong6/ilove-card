@@ -1,4 +1,5 @@
 import { User } from '@/types/user.interfact';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
@@ -16,46 +17,31 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const checkAuth = async () => {
-    try {
-      const response = await fetch('/api/auth/me');
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(status === 'loading');
   };
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [status]);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Login failed');
+      if (result?.error) {
+        throw new Error(result.error);
       }
 
-      await checkAuth();
       router.push('/dashboard');
-
       toast.success('Login successful');
     } catch (error) {
       toast.error('Login failed');
@@ -65,7 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (name: string, email: string, password: string) => {
     try {
-      console.log('xxx130 register: ', name, email, password);
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,15 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-
-      setUser(null);
+      await signOut({ redirect: false });
       router.push('/login');
       toast.success('Logged out successfully');
     } catch (error) {
@@ -106,9 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: session?.user ?? null,
         isLoading,
-        isAuthenticated: !!user,
+        isAuthenticated: !!session?.user,
         login,
         register,
         logout,
