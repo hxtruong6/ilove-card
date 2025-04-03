@@ -240,6 +240,57 @@ const IconButtonExample = () => (
 );
 ```
 
+### Theme Configuration
+
+- Theme defined in `/styles/theme.ts`
+- Use semantic tokens for colors
+- Define component variants
+- Example:
+
+  ```ts
+  import { defineConfig } from '@chakra-ui/react';
+
+  export const theme = defineConfig({
+    colors: {
+      primary: {
+        50: '#f0f9ff',
+        100: '#e0f2fe',
+        // ... other shades
+        900: '#0c4a6e',
+      },
+    },
+    components: {
+      Button: {
+        variants: {
+          solid: {
+            bg: 'primary.500',
+            color: 'white',
+          },
+        },
+      },
+    },
+  });
+  ```
+
+### Responsive Design
+
+- Use responsive styles with object syntax
+- Breakpoints: sm, md, lg, xl, 2xl
+- Example:
+
+  ```tsx
+  <Grid
+    templateColumns={{
+      base: '1fr',
+      md: 'repeat(2, 1fr)',
+      lg: 'repeat(3, 1fr)',
+    }}
+    gap={4}
+  >
+    {/* Grid items */}
+  </Grid>
+  ```
+
 ## Best Practices
 
 1. **Component Structure**
@@ -271,6 +322,74 @@ const IconButtonExample = () => (
    - Use `gap` prop for consistent spacing
    - Use `wrap` prop for responsive layouts
 
+### Component Composition
+
+- Compose components for complex UIs
+- Use Box for layout
+- Leverage Stack for spacing
+- Example:
+
+  ```tsx
+  <Stack spacing={4}>
+    <Box>
+      <Heading>Title</Heading>
+      <Text>Description</Text>
+    </Box>
+    <ButtonGroup>
+      <Button>Action 1</Button>
+      <Button>Action 2</Button>
+    </ButtonGroup>
+  </Stack>
+  ```
+
+### Form Components
+
+- Use FormControl for form fields
+- Implement validation states
+- Show error messages
+- Example:
+
+  ```tsx
+  <FormControl isInvalid={!!error}>
+    <FormLabel>Email</FormLabel>
+    <Input type="email" />
+    <FormErrorMessage>{error}</FormErrorMessage>
+  </FormControl>
+  ```
+
+### Toast Notifications
+
+- We use Sonner for toast notifications instead of Chakra UI's toast
+- Import from 'sonner' package
+- Example:
+
+  ```tsx
+  import { toast } from 'sonner';
+
+  toast.success('Operation completed');
+  toast.error('Something went wrong');
+  ```
+
+### Modal Dialogs
+
+- Use Modal for popups
+- Implement focus management
+- Handle keyboard navigation
+- Example:
+
+  ```tsx
+  <Modal isOpen={isOpen} onClose={onClose}>
+    <ModalOverlay />
+    <ModalContent>
+      <ModalHeader>Title</ModalHeader>
+      <ModalBody>Content</ModalBody>
+      <ModalFooter>
+        <Button onClick={onClose}>Close</Button>
+      </ModalFooter>
+    </ModalContent>
+  </Modal>
+  ```
+
 ## Theme Customization
 
 The project uses a custom theme defined in `styles/theme.ts`. Key customizations include:
@@ -292,6 +411,64 @@ The project uses a custom theme defined in `styles/theme.ts`. Key customizations
    - Card styles
    - Form control styles
 
+### Color Tokens
+
+- Define semantic color tokens
+- Use HSL for color scales
+- Example:
+
+  ```ts
+  colors: {
+    primary: {
+      50: 'hsl(200, 100%, 95%)',
+      100: 'hsl(200, 100%, 90%)',
+      // ... other shades
+      900: 'hsl(200, 100%, 20%)',
+    },
+  }
+  ```
+
+### Typography
+
+- Define font families
+- Set up text styles
+- Example:
+
+  ```ts
+  fonts: {
+    heading: 'var(--font-inter)',
+    body: 'var(--font-inter)',
+  },
+  textStyles: {
+    h1: {
+      fontSize: ['2xl', '3xl', '4xl'],
+      fontWeight: 'bold',
+    },
+  }
+  ```
+
+### Spacing
+
+- Use consistent spacing scale
+- Define container sizes
+- Example:
+
+  ```ts
+  space: {
+    px: '1px',
+    0.5: '0.125rem',
+    1: '0.25rem',
+    // ... other sizes
+    72: '18rem',
+  },
+  containers: {
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  }
+  ```
+
 ## Updates Log
 
 ### 2024-04-03
@@ -307,3 +484,17 @@ The project uses a custom theme defined in `styles/theme.ts`. Key customizations
 - Document advanced patterns
 - Add performance optimization tips
 - Include testing strategies
+
+### Planned Features
+
+- Dark mode support
+- Custom animations
+- Advanced form validation
+- Component documentation
+- Storybook integration
+
+### Migration Notes
+
+- Keep up with Chakra UI updates
+- Test breaking changes
+- Update dependencies regularly

@@ -1,5 +1,6 @@
 import { generateTokens, verifyRefreshToken, verifyToken } from '@/lib/jwt';
 import { rateLimiterMiddleware } from '@/middleware/rateLimiter';
+import { getToken } from 'next-auth/jwt';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -9,30 +10,41 @@ const publicRoutes = [
   '/',
   '/login',
   '/register',
-  // '/dashboard',
   '/api/auth/login',
   '/api/auth/register',
   '/api/auth/refresh',
   '/landing',
 ];
 
+// Paths that require authentication
+const protectedPaths = ['/dashboard', '/tree/new', '/tree/[id]/edit'];
+
+// Paths that are public but need tree access control
+const sharePaths = ['/share/[shareId]/[treeId]'];
+
 const isEnableRateLimiter = process.env.ENABLE_RATE_LIMITER === 'true';
 
 /**
- * Middleware function to handle authentication and rate limiting
+ * Middleware function to handle authentication, rate limiting, and access control
  */
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
   // Apply rate limiting to API routes
-  if (isEnableRateLimiter && request.nextUrl.pathname.startsWith('/api/')) {
+  if (isEnableRateLimiter && pathname.startsWith('/api/')) {
     const rateLimitResponse = await rateLimiterMiddleware(request);
     if (rateLimitResponse) {
       return rateLimitResponse;
     }
   }
-  const pathname = request.nextUrl.pathname;
 
   // Allow public routes
   if (publicRoutes.includes(pathname)) {
+    return NextResponse.next();
+  }
+
+  // Handle share paths
+  if (pathname.startsWith('/share/')) {
     return NextResponse.next();
   }
 
@@ -59,8 +71,6 @@ export async function middleware(request: NextRequest) {
         email: payload.email,
         name: payload.name,
       };
-
-      console.log('xxx120 userData: ', userData);
 
       // Generate new tokens
       const tokens = await generateTokens(userData);
@@ -91,22 +101,21 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // No valid tokens found, redirect to login
+  // Redirect to login if no valid tokens
   const url = new URL('/login', request.url);
-  url.searchParams.set('from', pathname);
+  url.searchParams.set('callbackUrl', pathname);
   return NextResponse.redirect(url);
 }
 
-// Configure middleware to run on specific paths
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - public folder
      */
-    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };

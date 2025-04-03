@@ -79,29 +79,31 @@ This document breaks down the implementation tasks for the iCard project based o
   - [ ] Protect `/dashboard` and `/tree/[id]` routes
 - [ ] **Task 18: Implement authentication error handling**
   - [ ] Add error states to `LoginForm` and `RegisterForm`
-  - [ ] Display toast notifications for errors (e.g., “Invalid credentials”)
+  - [ ] Display toast notifications for errors (e.g., "Invalid credentials")
 
 ## Tree Management System
 
 ### Backend Tree API
 
-- [ ] **Task 19: Create tree API endpoints (High Priority)**
-  - [ ] `GET /api/trees` - List user’s trees
-  - [ ] `POST /api/trees` - Create tree
-  - [ ] `GET /api/trees/[id]` - Fetch tree details
-  - [ ] `PATCH /api/trees/[id]` - Update tree (theme, isPublic)
-  - [ ] `DELETE /api/trees/[id]` - Delete tree
-- [ ] **Task 20: Implement tree sharing functionality**
-  - [ ] Generate unique `shareUrl` in `/lib/utils.ts` (e.g., `shortid`)
-  - [ ] `POST /api/trees/[id]/share` - Enable sharing and return URL
-- [ ] **Task 21: Add tree access control middleware**
-  - [ ] Restrict edits to tree owner in `/app/api/trees/[id]/route.ts`
-  - [ ] Allow public read access if `isPublic`
+- [x] **Task 19: Create tree API endpoints (Completed)**
+  - [x] `GET /api/trees` - List user's trees with proper auth and error handling
+  - [x] `POST /api/trees` - Create tree with Zod validation
+  - [x] `GET /api/trees/[id]` - Fetch tree details with access control
+  - [x] `PATCH /api/trees/[id]` - Update tree with validation
+  - [x] `DELETE /api/trees/[id]` - Delete tree with ownership check
+- [x] **Task 20: Implement tree sharing functionality (Completed)**
+  - [x] Generate unique `shareUrl` in `/lib/utils.ts` using nanoid
+  - [x] `POST /api/trees/[id]/share` - Enable sharing and return URL
+  - [x] Update tree to be public when shared
+- [x] **Task 21: Add tree access control middleware (Completed)**
+  - [x] Restrict edits to tree owner in `/app/api/trees/[id]/route.ts`
+  - [x] Allow public read access if `isPublic`
+  - [x] Add middleware for protected and share paths
 
 ### Frontend Tree Components
 
 - [ ] **Task 22: Create tree management components**
-  - [ ] `TreeList` in `/components/tree/TreeList.tsx` - Display user’s trees
+  - [ ] `TreeList` in `/components/tree/TreeList.tsx` - Display user's trees
   - [ ] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree
   - [ ] `TreeCard` in `/components/tree/TreeCard.tsx` - Tree preview card
 - [ ] **Task 23: Implement tree visualization (High Priority)** [See TreeCanvas.md](tree_canvas.md)
@@ -110,7 +112,7 @@ This document breaks down the implementation tasks for the iCard project based o
   - [ ] Add subtle animations (e.g., hover effects) via Framer Motion
 - [ ] **Task 24: Add tree sharing UI**
   - [ ] `ShareTreeModal` in `/components/tree/ShareTreeModal.tsx`
-  - [ ] Add “Copy Link” button with clipboard API
+  - [ ] Add "Copy Link" button with clipboard API
 
 ## Message System
 
@@ -159,13 +161,13 @@ This document breaks down the implementation tasks for the iCard project based o
 ### UI/UX Design
 
 - [ ] **Task 33: Create festive design system**
-  - [ ] Define typography (e.g., playful fonts like “Comic Sans” for headers)
+  - [ ] Define typography (e.g., playful fonts like "Comic Sans" for headers)
   - [ ] Add festive icons (e.g., ornaments, stars) in `/public/images`
-  - [ ] Implement micro-animations (e.g., message “drop” effect)
+  - [ ] Implement micro-animations (e.g., message "drop" effect)
 - [ ] **Task 34: Enhance tree visualization UX**
   - [ ] Add zoom/pan controls for large trees
   - [ ] Implement hover tooltips for messages
-  - [ ] Add “empty state” UI (e.g., “No messages yet!”)
+  - [ ] Add "empty state" UI (e.g., "No messages yet!")
 - [ ] **Task 35: Design onboarding flow**
   - [ ] Create `OnboardingModal` in `/components/common`
   - [ ] Guide users to create first tree (3-step wizard)
@@ -238,7 +240,7 @@ This document breaks down the implementation tasks for the iCard project based o
 ### User Documentation
 
 - [ ] **Task 49: Create user guide**
-  - [ ] Write “Getting Started” in `/docs/user-guide.md`
+  - [ ] Write "Getting Started" in `/docs/user-guide.md`
   - [ ] Add screenshots of tree creation
 
 ## Progress Tracking

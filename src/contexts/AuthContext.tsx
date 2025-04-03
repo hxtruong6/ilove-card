@@ -1,13 +1,7 @@
+import { User } from '@/types/user.interfact';
 import { useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-}
 
 interface AuthContextType {
   user: User | null;
