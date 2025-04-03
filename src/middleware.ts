@@ -1,6 +1,7 @@
 import { generateTokens, verifyRefreshToken, verifyToken } from '@/lib/jwt';
 import { rateLimiterMiddleware } from '@/middleware/rateLimiter';
 import { getToken } from 'next-auth/jwt';
+import { withAuth } from 'next-auth/middleware';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
@@ -119,3 +120,15 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
+
+export default withAuth(
+  function middleware(req) {
+    // Add custom middleware logic here if needed
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+);

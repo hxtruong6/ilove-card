@@ -1,4 +1,5 @@
 import { compare, hash } from 'bcryptjs';
+import { signOut, useSession } from 'next-auth/react';
 
 const SALT_ROUNDS = 10;
 
@@ -44,4 +45,19 @@ export function validateEmail(email: string): boolean {
   // Basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+}
+
+export function useAuth() {
+  const { data: session, status } = useSession();
+
+  const user = session?.user;
+  const isLoading = status === 'loading';
+
+  const logout = () => signOut();
+
+  return {
+    user,
+    isLoading,
+    logout,
+  };
 }
