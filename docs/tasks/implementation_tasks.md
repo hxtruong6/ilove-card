@@ -104,7 +104,7 @@ This document breaks down the implementation tasks for the iCard project based o
   - [ ] `TreeList` in `/components/tree/TreeList.tsx` - Display user’s trees
   - [ ] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree
   - [ ] `TreeCard` in `/components/tree/TreeCard.tsx` - Tree preview card
-- [ ] **Task 23: Implement tree visualization (High Priority)**
+- [ ] **Task 23: Implement tree visualization (High Priority)** [See TreeCanvas.md](tree_canvas.md)
   - [ ] `TreeCanvas` in `/components/tree/TreeCanvas.tsx` - SVG/CSS tree
   - [ ] Support themes (e.g., Christmas, Birthday) with `/public/images`
   - [ ] Add subtle animations (e.g., hover effects) via Framer Motion
