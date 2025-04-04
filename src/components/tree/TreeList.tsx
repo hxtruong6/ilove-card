@@ -13,6 +13,7 @@ async function fetchTrees(): Promise<Tree[]> {
   const response = await fetch('/api/trees', {
     credentials: 'include',
   });
+  console.log('xxx200 fetchTrees', response);
   if (!response.ok) {
     throw new Error('Failed to fetch trees');
   }
@@ -62,7 +63,7 @@ export function TreeList() {
           as="button"
           color="blue.500"
           textDecoration="underline"
-          onClick={() => router.push('/tree/new')}
+          onClick={() => router.push('/dashboard/trees/new')}
           cursor="pointer"
           mt={2}
         >

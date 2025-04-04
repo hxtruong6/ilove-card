@@ -6,6 +6,9 @@
 - Implementing core authentication features
 - Developing the tree creation and customization functionality
 - Establishing the database schema and models
+- Tree management system implementation
+- Form data handling in Chakra UI components
+- Tree visualization development
 
 ## Recent Changes
 
@@ -23,9 +26,16 @@
    - Set up user session management
 
 3. **Database**
+
    - Initialized Prisma with MongoDB
    - Created initial schema
    - Set up database connection
+
+4. **Tree Form Component**
+
+   - Fixed TreeForm component to properly handle form data with Select components
+   - Added Select.HiddenSelect with name attributes to ensure form values are included in submissions
+   - Updated route constants for better navigation management
 
 ## Active Decisions
 
@@ -50,6 +60,8 @@
    - Implement tree creation
    - Set up message management
    - Add real-time updates
+   - Always optimize UI/UX for the user experience
+   - Mobile-first design
 
 2. **Short-term Goals**
 
@@ -59,10 +71,17 @@
    - Performance optimization
 
 3. **Long-term Goals**
+
    - Advanced customization options
    - Analytics and insights
    - Mobile app development
    - API documentation
+
+4. **Tree Visualization**
+
+   - Implement tree visualization with TreeCanvas component
+   - Develop message system for trees
+   - Enhance UI/UX with responsive design
 
 ## Current Considerations
 

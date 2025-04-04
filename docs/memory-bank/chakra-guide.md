@@ -158,7 +158,7 @@ import { Portal, Select, createListCollection } from '@chakra-ui/react';
 const SelectExample = () => {
   return (
     <Select.Root collection={frameworks} size="sm" width="320px">
-      <Select.HiddenSelect />
+      <Select.HiddenSelect name="framework" />
       <Select.Label>Select framework</Select.Label>
       <Select.Control>
         <Select.Trigger>
@@ -193,6 +193,8 @@ const frameworks = createListCollection({
   ],
 });
 ```
+
+> **Important**: Always include `<Select.HiddenSelect name="fieldName" />` when using Select components in forms. This creates a hidden native select element that ensures the selected value is included in the form data when submitted. Without this, the form data will not include the Select component's value.
 
 #### Lists
 

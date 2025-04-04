@@ -104,7 +104,7 @@ This document breaks down the implementation tasks for the iCard project based o
 
 - [x] **Task 22: Create tree management components (Completed)**
   - [x] `TreeList` in `/components/tree/TreeList.tsx` - Display user's trees
-  - [x] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree
+  - [x] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree with proper form data handling
   - [x] `TreeCard` in `/components/tree/TreeCard.tsx` - Tree preview card
 - [ ] **Task 23: Implement tree visualization (High Priority)** [See TreeCanvas.md](tree_canvas.md)
   - [ ] `TreeCanvas` in `/components/tree/TreeCanvas.tsx` - SVG/CSS tree

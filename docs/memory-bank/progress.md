@@ -29,7 +29,7 @@
 
 1. **Tree Functionality**
 
-   - [ ] Tree creation
+   - [x] Tree creation
    - [ ] Tree customization
    - [ ] Tree sharing
    - [ ] Tree management

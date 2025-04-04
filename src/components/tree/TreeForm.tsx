@@ -1,5 +1,6 @@
 'use client';
 
+import { ROUTE_CONSTANTS } from '@/lib/route-constants';
 import { Tree } from '@/types/tree.interface';
 import {
   Box,
@@ -74,7 +75,7 @@ export function TreeForm({ tree, onSuccess }: TreeFormProps) {
       if (onSuccess) {
         onSuccess();
       } else {
-        router.push(`/tree/${savedTree.id}`);
+        router.push(ROUTE_CONSTANTS.DASHBOARD.TREES.DETAILS.replace(':id', savedTree.id));
       }
     } catch (error) {
       toast.error(tree ? 'Failed to update tree' : 'Failed to create tree');
@@ -94,6 +95,7 @@ export function TreeForm({ tree, onSuccess }: TreeFormProps) {
         <FieldRoot required>
           <Field.Label>Theme</Field.Label>
           <Select.Root collection={THEMES} defaultValue={[tree?.theme || 'christmas']}>
+            <Select.HiddenSelect name="theme" />
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select theme" />
@@ -122,6 +124,7 @@ export function TreeForm({ tree, onSuccess }: TreeFormProps) {
         <FieldRoot>
           <Field.Label>Visibility</Field.Label>
           <Select.Root collection={VISIBILITY} defaultValue={[tree?.isPublic ? 'true' : 'false']}>
+            <Select.HiddenSelect name="isPublic" />
             <Select.Control>
               <Select.Trigger>
                 <Select.ValueText placeholder="Select visibility" />
