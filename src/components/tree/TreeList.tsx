@@ -1,3 +1,4 @@
+import { ROUTE_CONSTANTS } from '@/lib/route-constants';
 import { Tree } from '@/types/tree.interface';
 import { Box, Grid, Heading, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
@@ -13,7 +14,6 @@ async function fetchTrees(): Promise<Tree[]> {
   const response = await fetch('/api/trees', {
     credentials: 'include',
   });
-  console.log('xxx200 fetchTrees', response);
   if (!response.ok) {
     throw new Error('Failed to fetch trees');
   }
@@ -63,7 +63,7 @@ export function TreeList() {
           as="button"
           color="blue.500"
           textDecoration="underline"
-          onClick={() => router.push('/dashboard/trees/new')}
+          onClick={() => router.push(ROUTE_CONSTANTS.DASHBOARD.TREES.NEW)}
           cursor="pointer"
           mt={2}
         >

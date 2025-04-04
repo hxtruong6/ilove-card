@@ -37,6 +37,23 @@
    - Added Select.HiddenSelect with name attributes to ensure form values are included in submissions
    - Updated route constants for better navigation management
 
+5. **Tree Visualization**
+
+   - Implemented TreeCanvas component with mobile-first design
+   - Added theme support with dynamic colors and styles
+   - Integrated Framer Motion for smooth animations
+   - Created basic SVG decorations
+   - Added comprehensive test coverage
+
+6. **Tree Detail Page**
+
+   - Integrated TreeCanvas with API for fetching tree data
+   - Added message functionality with MessageForm component
+   - Implemented tree sharing and deletion features
+   - Created responsive layout with mobile-first design
+   - Added loading and error states for better UX
+   - Implemented decoration selection for messages
+
 ## Active Decisions
 
 1. **Technology Choices**
@@ -56,8 +73,7 @@
 
 1. **Immediate Tasks**
 
-   - Complete authentication flow
-   - Implement tree creation
+   - Implement tree management features
    - Set up message management
    - Add real-time updates
    - Always optimize UI/UX for the user experience

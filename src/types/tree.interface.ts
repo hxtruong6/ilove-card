@@ -21,4 +21,5 @@ export interface Message {
   treeId: string;
   createdAt: Date;
   updatedAt: Date;
+  decoration?: string;
 }

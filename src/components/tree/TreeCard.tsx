@@ -1,5 +1,6 @@
 'use client';
 
+import { ROUTE_CONSTANTS } from '@/lib/route-constants';
 import { Tree } from '@/types/tree.interface';
 import {
   Box,
@@ -82,7 +83,9 @@ export function TreeCard({ tree }: TreeCardProps) {
             fontSize="xl"
             fontWeight="bold"
             cursor="pointer"
-            onClick={() => router.push(`/tree/${tree.id}`)}
+            onClick={() =>
+              router.push(ROUTE_CONSTANTS.DASHBOARD.TREES.DETAILS.replace(':id', tree.id))
+            }
             _hover={{ color: 'brand.500' }}
           >
             {tree.title}

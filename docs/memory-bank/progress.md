@@ -30,13 +30,15 @@
 1. **Tree Functionality**
 
    - [x] Tree creation
-   - [ ] Tree customization
-   - [ ] Tree sharing
+   - [x] Tree customization
+   - [x] Tree sharing
+   - [x] Tree decorations
    - [ ] Tree management
 
 2. **Message System**
 
-   - [ ] Message creation
+   - [x] Message creation
+   - [x] Message decorations
    - [ ] Message management
    - [ ] Real-time updates
    - [ ] Message sharing

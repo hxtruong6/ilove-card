@@ -106,21 +106,24 @@ This document breaks down the implementation tasks for the iCard project based o
   - [x] `TreeList` in `/components/tree/TreeList.tsx` - Display user's trees
   - [x] `TreeForm` in `/components/tree/TreeForm.tsx` - Create/edit tree with proper form data handling
   - [x] `TreeCard` in `/components/tree/TreeCard.tsx` - Tree preview card
-- [ ] **Task 23: Implement tree visualization (High Priority)** [See TreeCanvas.md](tree_canvas.md)
-  - [ ] `TreeCanvas` in `/components/tree/TreeCanvas.tsx` - SVG/CSS tree
-  - [ ] Support themes (e.g., Christmas, Birthday) with `/public/images`
-  - [ ] Add subtle animations (e.g., hover effects) via Framer Motion
-- [ ] **Task 24: Add tree sharing UI**
-  - [ ] `ShareTreeModal` in `/components/tree/ShareTreeModal.tsx`
-  - [ ] Add "Copy Link" button with clipboard API
+- [x] **Task 23: Implement tree visualization (Completed)**
+  - [x] `TreeCanvas` in `/components/tree/TreeCanvas.tsx` - SVG/CSS tree
+  - [x] Support themes (e.g., Christmas, Birthday) with theme-specific colors and styles
+  - [x] Add subtle animations (e.g., hover effects) via Framer Motion
+- [x] **Task 24: Add tree sharing UI**
+  - [x] `ShareTreeModal` in `/components/tree/ShareTreeModal.tsx`
+  - [x] Add "Copy Link" button with clipboard API
+  - [x] Implement decoration selection for messages
+  - [x] Add email sharing option
+  - [x] Add social media sharing options
 
 ## Message System
 
 ### Backend Message API
 
-- [ ] **Task 25: Create message API endpoints (High Priority)**
-  - [ ] `GET /api/trees/[id]/messages` - List messages
-  - [ ] `POST /api/trees/[id]/messages` - Add message
+- [x] **Task 25: Create message API endpoints (High Priority)**
+  - [x] `GET /api/trees/[id]/messages` - List messages
+  - [x] `POST /api/trees/[id]/messages` - Add message
   - [ ] `PATCH /api/trees/[id]/messages/[messageId]` - Edit message
   - [ ] `DELETE /api/trees/[id]/messages/[messageId]` - Delete message
 - [ ] **Task 26: Implement real-time message updates**
@@ -129,10 +132,10 @@ This document breaks down the implementation tasks for the iCard project based o
 
 ### Frontend Message Components
 
-- [ ] **Task 27: Create message components**
-  - [ ] `MessageList` in `/components/tree/MessageList.tsx` - Display messages
-  - [ ] `MessageForm` in `/components/tree/MessageForm.tsx` - Input form
-  - [ ] `MessageCard` in `/components/tree/MessageCard.tsx` - Message ornament
+- [x] **Task 27: Create message components**
+  - [x] `MessageList` in `/components/tree/MessageList.tsx` - Display messages
+  - [x] `MessageForm` in `/components/tree/MessageForm.tsx` - Input form
+  - [x] `MessageCard` in `/components/tree/MessageCard.tsx` - Message ornament
 - [ ] **Task 28: Add rich text editor for messages**
   - [ ] Integrate `@tiptap/react` in `MessageForm`
   - [ ] Support bold, italic, and emojis
