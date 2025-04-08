@@ -48,6 +48,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^3.15.1",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint/eslintrc": "^3",

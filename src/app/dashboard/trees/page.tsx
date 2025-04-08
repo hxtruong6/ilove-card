@@ -1,6 +1,6 @@
 'use client';
 
-import { TreeList } from '@/components/tree/TreeList';
+import { TreeList } from '@/app/dashboard/trees/components/TreeList';
 import { Box, Container, Heading, Text } from '@chakra-ui/react';
 
 export default function TreesPage() {

@@ -86,7 +86,8 @@ export function TreeCard({ tree }: TreeCardProps) {
             onClick={() =>
               router.push(ROUTE_CONSTANTS.DASHBOARD.TREES.DETAILS.replace(':id', tree.id))
             }
-            _hover={{ color: 'brand.500' }}
+            _hover={{ color: 'green' }}
+            color={'green.500'}
           >
             {tree.title}
           </Text>

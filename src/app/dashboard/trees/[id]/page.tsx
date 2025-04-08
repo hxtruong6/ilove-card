@@ -1,7 +1,7 @@
 'use client';
 
-import { MessageForm } from '@/components/tree/MessageForm';
-import { TreeCanvas } from '@/components/tree/TreeCanvas';
+import { MessageForm } from '@/app/dashboard/trees/components/MessageForm';
+import { TreeCanvas } from '@/app/dashboard/trees/components/TreeCanvas';
 import { Tree } from '@/types/tree.interface';
 import {
   Box,

@@ -1,6 +1,6 @@
 'use client';
 
-import { TreeForm } from '@/components/tree/TreeForm';
+import { TreeForm } from '@/app/dashboard/trees/components/TreeForm';
 import { Box, Container, Heading, Text } from '@chakra-ui/react';
 
 export default function NewTreePage() {
