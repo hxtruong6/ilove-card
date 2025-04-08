@@ -15,9 +15,7 @@ const updateTreeSchema = z.object({
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    console.log('xxx200 session', session);
-    console.log('xxx201 params', params);
-    const treeId = await params.id;
+    const { id: treeId } = await params;
 
     const tree = await prisma.tree.findUnique({
       where: { id: treeId },
@@ -61,7 +59,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const treeId = await params.id;
+    const { id: treeId } = await params;
     const body = await request.json();
     const validatedData = updateTreeSchema.parse(body);
 
@@ -112,7 +110,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const treeId = params.id;
+    const { id: treeId } = await params;
 
     const tree = await prisma.tree.findUnique({
       where: { id: treeId },

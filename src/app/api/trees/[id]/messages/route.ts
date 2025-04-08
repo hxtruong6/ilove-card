@@ -13,7 +13,7 @@ const createMessageSchema = z.object({
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const session = await getServerSession(authOptions);
-    const treeId = await params.id;
+    const { id: treeId } = await params;
 
     const tree = await prisma.tree.findUnique({
       where: { id: treeId },
@@ -60,7 +60,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const treeId = await params.id;
+    const { id: treeId } = await params;
     const body = await request.json();
     const validatedData = createMessageSchema.parse(body);
 

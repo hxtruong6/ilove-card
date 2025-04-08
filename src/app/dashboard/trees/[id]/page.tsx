@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { FiEdit2, FiShare2, FiTrash2 } from 'react-icons/fi';
 import { toast } from 'sonner';
 
@@ -38,6 +38,7 @@ export default function TreeDetailsPage({ params }: { params: { id: string } }) 
   const router = useRouter();
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [showMessageForm, setShowMessageForm] = useState(false);
+  const { id: treeId } = use(params as unknown as Promise<{ id: string }>);
 
   const {
     data: tree,
@@ -45,8 +46,8 @@ export default function TreeDetailsPage({ params }: { params: { id: string } }) 
     error,
     refetch,
   } = useQuery({
-    queryKey: ['tree', params.id],
-    queryFn: () => fetchTree(params.id),
+    queryKey: ['tree', treeId],
+    queryFn: () => fetchTree(treeId),
   });
 
   const handleDelete = async () => {
