@@ -15,33 +15,75 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  email         String          @unique
-  password      String
-  name          String
-  avatar        String          @default("https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Round&hairColor=Auburn&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Hearts&eyebrowType=Default&mouthType=Default&skinColor=Light")
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  trees         Tree[]
-  messages      Message[]
-  receivedTrees TreeRecipient[]
+  id                     String            @id @default(auto()) @map("_id") @db.ObjectId
+  email                  String            @unique
+  phone                  String?           @unique
+  password               String
+  name                   String
+  avatar                 String            @default("https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Round&hairColor=Auburn&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Hearts&eyebrowType=Default&mouthType=Default&skinColor=Light")
+  subscriptionStatus     String            @default("FREE") // "FREE" | "MONTHLY" | "YEARLY" | "LIFETIME"
+  subscriptionEndDate    DateTime? // null for FREE and LIFETIME
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  emailVerifiedAt        DateTime?
+  phoneVerifiedAt        DateTime?
+  isActive               Boolean           @default(true)
+  accountStatus          String            @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "BANNED"
+  accountStatusReason    String?
+  accountStatusUpdatedAt DateTime?
+  lastActiveTreeId       String?           @db.ObjectId
+  lastActiveTree         Tree?             @relation("LastActiveTree", fields: [lastActiveTreeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  trees                  Tree[]
+  messages               Message[]
+  receivedTrees          TreeRecipient[]
+  subscriptions          Subscription[]
+  notifications          Notification[]
+  activities             UserActivity[]
+  exports                Export[]
+  sessions               UserSession[]
+  mentions               Mention[]
+  reactions              MessageReaction[]
 }
 
 model Tree {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
-  title       String
-  description String?
-  theme       String          @default("christmas")
-  isPublic    Boolean         @default(false)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  owner       User            @relation(fields: [ownerId], references: [id])
-  ownerId     String          @db.ObjectId
-  recipients  TreeRecipient[]
-  messages    Message[]
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String?
+  themeId         String          @db.ObjectId
+  theme           Theme           @relation(fields: [themeId], references: [id])
+  visibility      String          @default("INVITE_ONLY") // "PUBLIC" | "INVITE_ONLY" | "PRIVATE"
+  maxMessages     Int             @default(20) // Maximum messages for a "full" tree, used for progress tracking
+  isDefaultEvent  Boolean         @default(false)
+  eventType       String? // "NEW_YEAR", "CHRISTMAS", "BIRTHDAY", etc.
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  owner           User            @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ownerId         String          @db.ObjectId
+  recipients      TreeRecipient[]
+  messages        Message[]
+  views           TreeView[]
+  shares          TreeShare[]
+  exports         Export[]
+  progressEntries TreeProgress[]
+  lastActiveUsers User[]          @relation("LastActiveTree")
 
   @@index([ownerId])
-  @@index([isPublic])
+  @@index([themeId])
+  @@index([visibility])
+  @@index([isDefaultEvent])
+  @@index([eventType])
+}
+
+model Theme {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique // e.g., "Christmas", "Halloween", "Birthday"
+  isPremium   Boolean  @default(false)
+  colorScheme Json? // e.g., { "primary": "#2E5EAA", "secondary": "#A3BFFA" }
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  trees       Tree[]
+
+  @@index([isPremium])
 }
 
 model TreeRecipient {
@@ -50,25 +92,196 @@ model TreeRecipient {
   treeId    String   @db.ObjectId
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @db.ObjectId
+  role      String   @default("CONTRIBUTOR") // "CONTRIBUTOR" | "VIEWER"
   createdAt DateTime @default(now())
 
   @@unique([treeId, userId])
   @@index([treeId])
   @@index([userId])
+  @@index([role])
 }
 
 model Message {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  content    String
-  imageUrls  String[]
-  decoration String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  tree       Tree     @relation(fields: [treeId], references: [id])
-  treeId     String   @db.ObjectId
-  sender     User     @relation(fields: [senderId], references: [id])
-  senderId   String   @db.ObjectId
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  content       String
+  media         MessageMedia[]
+  decorationId  String?           @db.ObjectId
+  decoration    Decoration?       @relation(fields: [decorationId], references: [id])
+  isPremium     Boolean           @default(false)
+  isSelfMessage Boolean           @default(false)
+  isPublic      Boolean           @default(false)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  tree          Tree              @relation(fields: [treeId], references: [id])
+  treeId        String            @db.ObjectId
+  sender        User              @relation(fields: [senderId], references: [id])
+  senderId      String            @db.ObjectId
+  reactions     MessageReaction[]
+  mentions      Mention[]
 
   @@index([treeId])
   @@index([senderId])
+  @@index([decorationId])
+  @@index([isSelfMessage])
+  @@index([isPublic])
+}
+
+model MessageMedia {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String   @db.ObjectId
+  message   Message  @relation(fields: [messageId], references: [id])
+  type      String // "IMAGE" | "VIDEO" | "AUDIO"
+  url       String // URL pointing to Google Cloud Storage, e.g., "https://storage.googleapis.com/bucket-name/file-id"
+  size      Int // in bytes, to enforce limits (e.g., max 5MB for free users)
+  isPremium Boolean  @default(false)
+  mimeType  String // e.g., "image/jpeg", "video/mp4", "audio/mp3"
+  createdAt DateTime @default(now())
+
+  @@index([messageId])
+  @@index([type])
+}
+
+model Decoration {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  type      String // e.g., "Star", "Heart", "Gift"
+  icon      String // emoji or icon reference
+  isPremium Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+
+  @@index([type])
+  @@index([isPremium])
+}
+
+model Subscription {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id])
+  type      String // "MONTHLY" | "YEARLY" | "LIFETIME"
+  status    String // "ACTIVE" | "CANCELLED" | "EXPIRED"
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Export {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  treeId    String   @db.ObjectId
+  tree      Tree     @relation(fields: [treeId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  format    String // "IMAGE" | "PDF" | "GIF" (as per post-MVP export options)
+  url       String // URL to the exported file, stored in Google Cloud Storage
+  createdAt DateTime @default(now())
+
+  @@index([treeId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model TreeView {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  treeId   String   @db.ObjectId
+  tree     Tree     @relation(fields: [treeId], references: [id])
+  userId   String?  @db.ObjectId // null for anonymous views
+  viewedAt DateTime @default(now())
+
+  @@index([treeId])
+  @@index([viewedAt])
+}
+
+model TreeShare {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  treeId   String   @db.ObjectId
+  tree     Tree     @relation(fields: [treeId], references: [id])
+  userId   String   @db.ObjectId
+  platform String // e.g., "Facebook", "Instagram", "Twitter"
+  sharedAt DateTime @default(now())
+
+  @@index([treeId])
+  @@index([sharedAt])
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  type      String // e.g., "NEW_MESSAGE", "TREE_SHARED", "MENTION"
+  message   String // e.g., "Hey Aidan, let's write a message for me"
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model UserActivity {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  action    String // e.g., "CREATED_TREE", "ADDED_MESSAGE", "SHARED_TREE"
+  treeId    String?  @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([treeId])
+}
+
+// New Engagement Metric: Tracks reactions to messages (e.g., likes, emojis) to measure user interaction
+model MessageReaction {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId String   @db.ObjectId
+  message   Message  @relation(fields: [messageId], references: [id])
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  type      String // e.g., "LIKE", "HEART", "SMILE"
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, userId]) // Prevent duplicate reactions from the same user
+  @@index([messageId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+// New Engagement Metric: Tracks tree completion progress (e.g., for the "Tree is 50% decorated" indicator)
+model TreeProgress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  treeId    String   @db.ObjectId
+  tree      Tree     @relation(fields: [treeId], references: [id])
+  progress  Float // Percentage (0-100), calculated as (current messages / maxMessages) * 100
+  updatedAt DateTime @default(now())
+
+  @@index([treeId])
+  @@index([updatedAt])
+}
+
+// New Engagement Metric: Tracks user session activity to measure active usage and session duration
+model UserSession {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String    @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id])
+  startedAt DateTime  @default(now())
+  endedAt   DateTime? // Null if session is still active
+  duration  Int? // Duration in seconds, calculated when session ends
+
+  @@index([userId])
+  @@index([startedAt])
+}
+
+model Mention {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  messageId       String   @db.ObjectId
+  message         Message  @relation(fields: [messageId], references: [id])
+  mentionedUserId String   @db.ObjectId
+  mentionedUser   User     @relation(fields: [mentionedUserId], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@index([messageId])
+  @@index([mentionedUserId])
 }

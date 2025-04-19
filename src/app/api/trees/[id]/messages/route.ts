@@ -6,7 +6,13 @@ import { z } from 'zod';
 
 const createMessageSchema = z.object({
   content: z.string().min(1, 'Message content is required'),
-  decoration: z.string().optional(),
+  decoration: z.object({
+    id: z.string(),
+    type: z.string(),
+    icon: z.string(),
+    isPremium: z.boolean(),
+  }),
+  photos: z.array(z.string()).max(3).optional(),
 });
 
 // GET /api/trees/[id]/messages - List messages for a tree
@@ -52,7 +58,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // POST /api/trees/[id]/messages - Add a message to a tree
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -64,23 +70,45 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const body = await request.json();
     const validatedData = createMessageSchema.parse(body);
 
-    const tree = await prisma.tree.findUnique({
-      where: { id: treeId },
-      select: { isPublic: true, ownerId: true },
+    // Check user's subscription status for premium features
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        subscriptionStatus: true,
+        subscriptionEndDate: true,
+      },
     });
 
-    if (!tree) {
-      return NextResponse.json({ error: 'Tree not found' }, { status: 404 });
+    // Validate premium access
+    if (validatedData.decoration.isPremium) {
+      const hasPremiumAccess =
+        user?.subscriptionStatus !== 'FREE' &&
+        (user?.subscriptionStatus === 'LIFETIME' ||
+          (user?.subscriptionEndDate && user.subscriptionEndDate > new Date()));
+
+      if (!hasPremiumAccess) {
+        return NextResponse.json(
+          { error: 'Premium decoration requires an active subscription' },
+          { status: 403 }
+        );
+      }
     }
 
-    if (!tree.isPublic && tree.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Validate photo count based on subscription
+    const maxPhotos = user?.subscriptionStatus === 'FREE' ? 1 : 3;
+    if (validatedData.photos && validatedData.photos.length > maxPhotos) {
+      return NextResponse.json(
+        { error: `Free users can only upload ${maxPhotos} photo` },
+        { status: 403 }
+      );
     }
 
     const message = await prisma.message.create({
       data: {
         content: validatedData.content,
         decoration: validatedData.decoration,
+        imageUrls: validatedData.photos || [],
+        isPremium: validatedData.decoration.isPremium,
         treeId,
         senderId: session.user.id,
       },
@@ -90,6 +118,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
             id: true,
             name: true,
             email: true,
+            subscriptionStatus: true,
           },
         },
       },

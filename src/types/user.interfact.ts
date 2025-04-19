@@ -5,6 +5,7 @@ export interface User {
   avatar?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  subscriptionStatus: string;
 }
 
 export interface UserSession {
@@ -12,4 +13,5 @@ export interface UserSession {
   email: string;
   name: string;
   avatar?: string;
+  subscriptionStatus: string;
 }
