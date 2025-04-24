@@ -80,7 +80,9 @@
     "prisma": "^6.5.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "cypress": "^14.3.2",
+    "supertest": "^7.1.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
