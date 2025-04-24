@@ -1,9 +1,10 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { Button, Field, Input, Stack } from '@chakra-ui/react';
+import { Box, Button, Flex, Input, Stack, Text } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { FcGoogle } from 'react-icons/fc';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -32,24 +33,89 @@ export function LoginForm() {
   });
 
   return (
-    <form onSubmit={onSubmit}>
-      <Stack gap={4}>
-        <Field.Root invalid={!!errors.email}>
-          <Field.Label>Email</Field.Label>
-          <Input {...register('email')} type="email" />
-          <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
-        </Field.Root>
-
-        <Field.Root invalid={!!errors.password}>
-          <Field.Label>Password</Field.Label>
-          <Input {...register('password')} type="password" />
-          <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
-        </Field.Root>
-
-        <Button type="submit" w="full" loading={isSubmitting}>
-          Login
-        </Button>
+    <Stack gap={6} width="full">
+      {/* Title */}
+      <Stack gap={1} textAlign="center">
+        <Text fontSize="4xl" fontWeight="bold" color="#5F9E34">
+          Welcome!
+        </Text>
+        <Text fontSize="lg" color="gray.600">
+          Login to your Account
+        </Text>
       </Stack>
-    </form>
+
+      {/* Form */}
+      <form onSubmit={onSubmit}>
+        <Stack gap={4}>
+          <Stack gap={4}>
+            <Input
+              {...register('email')}
+              type="email"
+              placeholder="email@example.com"
+              size="lg"
+              bg="white"
+              borderColor={errors.email ? 'red.500' : 'gray.200'}
+              _hover={{ borderColor: errors.email ? 'red.500' : 'gray.300' }}
+              _focus={{ borderColor: errors.email ? 'red.500' : '#04555A', boxShadow: 'none' }}
+            />
+            {errors.email && (
+              <Text color="red.500" fontSize="sm">
+                {errors.email.message}
+              </Text>
+            )}
+
+            <Input
+              {...register('password')}
+              type="password"
+              placeholder="your password"
+              size="lg"
+              bg="white"
+              borderColor={errors.password ? 'red.500' : 'gray.200'}
+              _hover={{ borderColor: errors.password ? 'red.500' : 'gray.300' }}
+              _focus={{ borderColor: errors.password ? 'red.500' : '#04555A', boxShadow: 'none' }}
+            />
+            {errors.password && (
+              <Text color="red.500" fontSize="sm">
+                {errors.password.message}
+              </Text>
+            )}
+          </Stack>
+
+          <Button
+            type="submit"
+            size="lg"
+            width="full"
+            bg="#04555A"
+            color="white"
+            _hover={{ bg: '#034147' }}
+            _active={{ bg: '#023138' }}
+            loading={isSubmitting}
+          >
+            Sign in
+          </Button>
+        </Stack>
+      </form>
+
+      {/* Divider */}
+      <Flex align="center" gap={3}>
+        <Box flex={1} h="1px" bg="gray.200" />
+        <Text color="gray.500">Or</Text>
+        <Box flex={1} h="1px" bg="gray.200" />
+      </Flex>
+
+      {/* Google Sign In */}
+      <Button
+        size="lg"
+        width="full"
+        variant="outline"
+        gap={2}
+        onClick={() => {}}
+        borderColor="gray.200"
+        _hover={{ bg: 'gray.50' }}
+      >
+        <FcGoogle />
+        Continue with Google
+      </Button>
+    </Stack>
   );
 }
