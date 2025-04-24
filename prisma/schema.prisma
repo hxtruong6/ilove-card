@@ -18,14 +18,14 @@ model User {
   id                     String            @id @default(auto()) @map("_id") @db.ObjectId
   email                  String            @unique
   phone                  String?           @unique
-  password               String
-  name                   String
-  avatar                 String            @default("https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Round&hairColor=Auburn&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Hearts&eyebrowType=Default&mouthType=Default&skinColor=Light")
+  password               String?
+  name                   String?
+  avatar                 String?           @default("https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Round&hairColor=Auburn&facialHairType=Blank&clotheType=BlazerSweater&eyeType=Hearts&eyebrowType=Default&mouthType=Default&skinColor=Light") @map("image")
   subscriptionStatus     String            @default("FREE") // "FREE" | "MONTHLY" | "YEARLY" | "LIFETIME"
   subscriptionEndDate    DateTime? // null for FREE and LIFETIME
   createdAt              DateTime          @default(now())
   updatedAt              DateTime          @updatedAt
-  emailVerifiedAt        DateTime?
+  emailVerified          DateTime?
   phoneVerifiedAt        DateTime?
   isActive               Boolean           @default(true)
   accountStatus          String            @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "BANNED"
@@ -40,9 +40,15 @@ model User {
   notifications          Notification[]
   activities             UserActivity[]
   exports                Export[]
-  sessions               UserSession[]
   mentions               Mention[]
   reactions              MessageReaction[]
+  savedTrees             SavedTree[]       @relation("UserSavedTree")
+  treesOwnedAndSaved     SavedTree[]       @relation("TreeOwner")
+  sentFriendRequests     Friend[]          @relation("UserFriend")
+  receivedFriendRequests Friend[]          @relation("FriendUser")
+  appSessions            UserSession[]     @relation("UserAppSession")
+  accounts               Account[]
+  sessions               Session[]
 }
 
 model Tree {
@@ -66,12 +72,7 @@ model Tree {
   exports         Export[]
   progressEntries TreeProgress[]
   lastActiveUsers User[]          @relation("LastActiveTree")
-
-  @@index([ownerId])
-  @@index([themeId])
-  @@index([visibility])
-  @@index([isDefaultEvent])
-  @@index([eventType])
+  savedTrees      SavedTree[]
 }
 
 model Theme {
@@ -99,6 +100,41 @@ model TreeRecipient {
   @@index([treeId])
   @@index([userId])
   @@index([role])
+}
+
+// A user could save a list of trees of their friends
+model SavedTree {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  treeOwnerId String   @db.ObjectId // The owner of the saved tree
+  treeId      String   @db.ObjectId
+  userId      String   @db.ObjectId // The user who saved the tree
+  createdAt   DateTime @default(now())
+
+  treeOwner User @relation("TreeOwner", fields: [treeOwnerId], references: [id])
+  tree      Tree @relation(fields: [treeId], references: [id])
+  user      User @relation("UserSavedTree", fields: [userId], references: [id])
+
+  @@unique([userId, treeId]) // Prevent duplicate saves
+  @@index([treeOwnerId]) // get all saved trees for a user
+  @@index([treeId]) // get all users who saved a tree
+  @@index([userId]) // get all trees saved by a user
+}
+
+model Friend {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  friendId  String   @db.ObjectId
+  status    String   @default("PENDING") // "PENDING" | "ACCEPTED" | "REJECTED"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User @relation("UserFriend", fields: [userId], references: [id])
+  friend User @relation("FriendUser", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId]) // Prevent duplicate friend relationships
+  @@index([userId])
+  @@index([friendId])
+  @@index([status])
 }
 
 model Message {
@@ -265,7 +301,7 @@ model TreeProgress {
 model UserSession {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   userId    String    @db.ObjectId
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation("UserAppSession", fields: [userId], references: [id])
   startedAt DateTime  @default(now())
   endedAt   DateTime? // Null if session is still active
   duration  Int? // Duration in seconds, calculated when session ends
@@ -285,3 +321,45 @@ model Mention {
   @@index([messageId])
   @@index([mentionedUserId])
 }
+
+// --- NextAuth.js Adapter Models ---
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @map("user_id") @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// --- End NextAuth.js Adapter Models ---
