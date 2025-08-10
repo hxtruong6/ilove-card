@@ -2,6 +2,7 @@ import { hashPassword, validateEmail, validatePassword } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 
+// POST /api/auth/register Body: { email, password, name }
 export async function POST(request: Request) {
   try {
     const body = await request.json();

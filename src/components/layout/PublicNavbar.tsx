@@ -12,11 +12,20 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FiFile, FiLogOut, FiUser } from 'react-icons/fi';
+
+import SideBar from './SideBar';
 
 export function PublicNavbar() {
   const { user, logout } = useAuth();
   const isMobile = useBreakpointValue({ base: true, md: false });
+
+  const router = useRouter();
+
+  const handleNavigation = (route: string) => {
+    router.push(route);
+  };
 
   return (
     <Flex
@@ -38,6 +47,7 @@ export function PublicNavbar() {
         </Box>
       </Link>
 
+      <SideBar userName="Aidan" onNavigate={handleNavigation} isOpen={false} />
       {/* Menu */}
       {isMobile ? (
         <Menu.Root>

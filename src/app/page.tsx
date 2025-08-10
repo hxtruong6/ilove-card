@@ -1,6 +1,8 @@
 'use client';
 
+import UserMessage from '@/components/common/UserMessage';
 import MainTreeSection from '@/components/pages/home/MainTreeSection';
+import TreeBottomSection from '@/components/pages/home/TreeBottomSection';
 import TreeUserInfoSection from '@/components/pages/home/TreeUserInfoSection';
 import { useColorModeValue } from '@/components/ui/color-mode';
 import { useAuth } from '@/contexts/AuthContext';
@@ -65,40 +67,13 @@ export default function LandingPage() {
     <Box minH="100vh" bg={bgColor}>
       <TreeUserInfoSection />
       <MainTreeSection />
+      <TreeBottomSection />
+      <UserMessage
+        message="Hi, you're the best person I've ever known in this world"
+        author="Alex"
+        timestamp="12:03 - Sep 28, 2025"
+        decorationUrl="https://www.google.com"
+      />
     </Box>
-  );
-}
-
-// Feature Card Component
-function FeatureCard({
-  title,
-  description,
-  icon: IconComponent,
-}: {
-  title: string;
-  description: string;
-  icon: React.ComponentType;
-}) {
-  return (
-    <VStack
-      bg="white"
-      p={6}
-      borderRadius="lg"
-      boxShadow="sm"
-      gap={4}
-      align="start"
-      transition="all 0.2s"
-      _hover={{ transform: 'translateY(-4px)', boxShadow: 'md' }}
-    >
-      <Icon boxSize={8} color="brand.500">
-        <IconComponent />
-      </Icon>
-      <Box>
-        <Text fontSize="lg" fontWeight="semibold" color="gray.800">
-          {title}
-        </Text>
-        <Text color="gray.600">{description}</Text>
-      </Box>
-    </VStack>
   );
 }
