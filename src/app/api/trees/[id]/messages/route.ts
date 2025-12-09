@@ -23,14 +23,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 		const tree = await prisma.tree.findUnique({
 			where: { id: treeId },
-			select: { isPublic: true, ownerId: true },
+			select: { visibility: true, ownerId: true },
 		});
 
 		if (!tree) {
 			return NextResponse.json({ error: 'Tree not found' }, { status: 404 });
 		}
 
-		if (!tree.isPublic && tree.ownerId !== session?.user?.id) {
+		if (tree.visibility !== 'PUBLIC' && tree.ownerId !== session?.user?.id) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
@@ -44,6 +44,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 						email: true,
 					},
 				},
+				decoration: true,
 			},
 			orderBy: {
 				createdAt: 'desc',
@@ -106,11 +107,26 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 		const message = await prisma.message.create({
 			data: {
 				content: validatedData.content,
-				decoration: validatedData.decoration,
-				imageUrls: validatedData.photos || [],
+				decoration: {
+					connect: { id: validatedData.decoration.id },
+				},
+				media: {
+					create:
+						validatedData.photos?.map(url => ({
+							type: 'IMAGE',
+							url,
+							size: 0, // Fallback as size is not available from client
+							mimeType: 'image/jpeg', // Fallback MIME type
+							isPremium: false,
+						})) || [],
+				},
 				isPremium: validatedData.decoration.isPremium,
-				treeId,
-				senderId: session.user.id,
+				tree: {
+					connect: { id: treeId },
+				},
+				sender: {
+					connect: { id: session.user.id },
+				},
 			},
 			include: {
 				sender: {

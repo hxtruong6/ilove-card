@@ -33,7 +33,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 		// Update tree to be public
 		await prisma.tree.update({
 			where: { id: treeId },
-			data: { isPublic: true },
+			data: { visibility: 'PUBLIC' },
 		});
 
 		return NextResponse.json({ shareUrl });

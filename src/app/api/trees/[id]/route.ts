@@ -39,7 +39,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 			return NextResponse.json({ error: 'Tree not found' }, { status: 404 });
 		}
 
-		if (!tree.isPublic && tree.ownerId !== session?.user?.id) {
+		if (tree.visibility !== 'PUBLIC' && tree.ownerId !== session?.user?.id) {
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
@@ -76,9 +76,19 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 		}
 
+		const updateData: any = { ...validatedData };
+		if (validatedData.theme) {
+			updateData.themeId = validatedData.theme;
+			delete updateData.theme;
+		}
+		if (validatedData.isPublic !== undefined) {
+			updateData.visibility = validatedData.isPublic ? 'PUBLIC' : 'INVITE_ONLY';
+			delete updateData.isPublic;
+		}
+
 		const updatedTree = await prisma.tree.update({
 			where: { id: treeId },
-			data: validatedData,
+			data: updateData,
 			include: {
 				owner: {
 					select: {

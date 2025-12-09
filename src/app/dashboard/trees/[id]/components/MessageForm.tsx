@@ -1,19 +1,20 @@
 'use client';
 
 import {
-  Box,
-  Button,
-  Input,
-  Progress,
-  SimpleGrid,
-  Text,
-  VStack,
-  useDisclosure,
+	Box,
+	Button,
+	Image,
+	Input,
+	SimpleGrid,
+	Text,
+	VStack,
+	useDisclosure,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { FiPlus as AddIcon, FiTrash as DeleteIcon } from 'react-icons/fi';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -23,8 +24,8 @@ import { DecorationPicker } from './DecorationPicker';
 // import { useDragAndDrop } from './hooks/useDragAndDrop';
 
 interface MessageFormProps {
-  treeId: string;
-  onSuccess?: () => void;
+	treeId: string;
+	onSuccess?: () => void;
 }
 
 const MAX_CHARS = 280;
@@ -32,165 +33,181 @@ const MAX_PHOTOS_FREE = 1;
 const MAX_PHOTOS_PREMIUM = 3;
 
 export const MessageForm = ({ treeId, onSuccess }: MessageFormProps) => {
-  const { data: session } = useSession();
-  const [content, setContent] = useState('');
-  const [decoration, setDecoration] = useState<{
-    id: string;
-    type: string;
-    isPremium: boolean;
-  } | null>(null);
-  const [photos, setPhotos] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+	const { data: session } = useSession();
+	const [content, setContent] = useState('');
+	const [decoration, setDecoration] = useState<{
+		id: string;
+		type: string;
+		isPremium: boolean;
+	} | null>(null);
+	const [photos, setPhotos] = useState<string[]>([]);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isUploading, setIsUploading] = useState(false);
+	const [error, setError] = useState('');
 
-  const router = useRouter();
-  const { open, onOpen, onClose } = useDisclosure();
+	const router = useRouter();
+	const { open, onOpen, onClose } = useDisclosure();
 
-  const maxPhotos =
-    session?.user?.subscriptionStatus === 'FREE' ? MAX_PHOTOS_FREE : MAX_PHOTOS_PREMIUM;
+	const maxPhotos =
+		session?.user?.subscriptionStatus === 'FREE' ? MAX_PHOTOS_FREE : MAX_PHOTOS_PREMIUM;
 
-  //   const { previewRef, handleDragStart } = useDragAndDrop();
+	//   const { previewRef, handleDragStart } = useDragAndDrop();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError('');
+		setIsSubmitting(true);
 
-    try {
-      const response = await fetch(`/api/trees/${treeId}/messages`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content,
-          decoration,
-          photos,
-        }),
-      });
+		try {
+			const response = await fetch(`/api/trees/${treeId}/messages`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					content,
+					decoration,
+					photos,
+				}),
+			});
 
-      const data = await response.json();
+			const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to post message');
-      }
+			if (!response.ok) {
+				throw new Error(data.error || 'Failed to post message');
+			}
 
-      toast.success('Message posted!');
+			toast.success('Message posted!');
 
-      setContent('');
-      setDecoration(null);
-      setPhotos([]);
-      onSuccess?.();
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
-      toast.error('Failed to post message');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+			setContent('');
+			setDecoration(null);
+			setPhotos([]);
+			onSuccess?.();
+			router.refresh();
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Something went wrong');
+			toast.error('Failed to post message');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+	const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const files = e.target.files;
+		if (!files) return;
 
-    if (photos.length + files.length > maxPhotos) {
-      toast.error(`You can only upload up to ${maxPhotos} photos`);
-      return;
-    }
+		if (photos.length + files.length > maxPhotos) {
+			toast.error(`You can only upload up to ${maxPhotos} photos`);
+			return;
+		}
 
-    setIsUploading(true);
+		setIsUploading(true);
 
-    try {
-      // Implement your photo upload logic here
-      // This is a placeholder for the actual implementation
-      const uploadedUrls = await Promise.all(
-        Array.from(files).map(async file => {
-          // Replace with your actual upload logic
-          return URL.createObjectURL(file);
-        })
-      );
+		try {
+			// Implement your photo upload logic here
+			// This is a placeholder for the actual implementation
+			const uploadedUrls = await Promise.all(
+				Array.from(files).map(async file => {
+					// Replace with your actual upload logic
+					return URL.createObjectURL(file);
+				})
+			);
 
-      setPhotos([...photos, ...uploadedUrls]);
-    } catch (error) {
-      toast.error('Failed to upload photos');
-    } finally {
-      setIsUploading(false);
-    }
-  };
+			setPhotos([...photos, ...uploadedUrls]);
+		} catch (error) {
+			toast.error('Failed to upload photos');
+		} finally {
+			setIsUploading(false);
+		}
+	};
 
-  return (
-    <Box as="form" onSubmit={handleSubmit}>
-      <VStack spacing={4}>
-        <FormControl isInvalid={!!error}>
-          <Input
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder="Write your message..."
-            maxLength={MAX_CHARS}
-          />
-          <Text fontSize="sm" color="gray.500" mt={1}>
-            {content.length}/{MAX_CHARS}
-          </Text>
-          {error && <FormErrorMessage>{error}</FormErrorMessage>}
-        </FormControl>
+	return (
+		<Box as="form" onSubmit={handleSubmit}>
+			<VStack gap={4}>
+				<Box w="full">
+					<Input
+						value={content}
+						onChange={e => setContent(e.target.value)}
+						placeholder="Write your message..."
+						maxLength={MAX_CHARS}
+						borderColor={error ? 'red.500' : 'inherit'}
+					/>
+					<Text fontSize="sm" color="gray.500" mt={1}>
+						{content.length}/{MAX_CHARS}
+					</Text>
+					{error && (
+						<Text color="red.500" fontSize="sm" mt={1}>
+							{error}
+						</Text>
+					)}
+				</Box>
 
-        <DecorationPicker onSelect={setDecoration} selectedId={decoration?.id} />
+				<DecorationPicker onSelect={setDecoration} selectedId={decoration?.id} />
 
-        <Box w="full">
-          <Text mb={2} fontWeight="medium">
-            Add Photos ({photos.length}/{maxPhotos})
-          </Text>
-          <SimpleGrid columns={[2, 3]} spacing={2}>
-            {photos.map((url, index) => (
-              <Box key={index} position="relative">
-                <Image
-                  src={url}
-                  alt={`Upload ${index + 1}`}
-                  borderRadius="md"
-                  objectFit="cover"
-                  h="100px"
-                />
-                <IconButton
-                  aria-label="Remove photo"
-                  icon={<DeleteIcon />}
-                  size="xs"
-                  position="absolute"
-                  top={1}
-                  right={1}
-                  onClick={() => {
-                    setPhotos(photos.filter((_, i) => i !== index));
-                  }}
-                />
-              </Box>
-            ))}
-            {photos.length < maxPhotos && (
-              <Button
-                as="label"
-                h="100px"
-                cursor="pointer"
-                variant="outline"
-                display="flex"
-                flexDirection="column"
-                gap={2}
-              >
-                <AddIcon />
-                <Text fontSize="sm">Add Photo</Text>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  display="none"
-                  multiple={maxPhotos - photos.length > 1}
-                />
-              </Button>
-            )}
-          </SimpleGrid>
-          {isUploading && <Progress size="xs" isIndeterminate mt={2} />}
-        </Box>
+				<Box w="full">
+					<Text mb={2} fontWeight="medium">
+						Add Photos ({photos.length}/{maxPhotos})
+					</Text>
+					<SimpleGrid columns={[2, 3]} gap={2}>
+						{photos.map((url, index) => (
+							<Box key={index} position="relative">
+								<Image
+									src={url}
+									alt={`Upload ${index + 1}`}
+									borderRadius="md"
+									objectFit="cover"
+									h="100px"
+									w="100%"
+								/>
+								<Button
+									size="xs"
+									position="absolute"
+									top={1}
+									right={1}
+									onClick={() => {
+										setPhotos(photos.filter((_, i) => i !== index));
+									}}
+									colorScheme="red"
+									variant="solid"
+									p={0}
+									minW="24px"
+									h="24px"
+								>
+									<DeleteIcon />
+								</Button>
+							</Box>
+						))}
+						{photos.length < maxPhotos && (
+							<Button
+								as="label"
+								h="100px"
+								cursor="pointer"
+								variant="outline"
+								display="flex"
+								flexDirection="column"
+								gap={2}
+							>
+								<AddIcon />
+								<Text fontSize="sm">Add Photo</Text>
+								<Input
+									type="file"
+									accept="image/*"
+									onChange={handlePhotoUpload}
+									display="none"
+									multiple={maxPhotos - photos.length > 1}
+								/>
+							</Button>
+						)}
+					</SimpleGrid>
+					{isUploading && (
+						<Text mt={2} fontSize="sm" color="teal.500">
+							Uploading photos...
+						</Text>
+					)}
+				</Box>
 
-        <Button type="submit" colorScheme="teal" dis={!content.trim() || !decoration} w="full">
-          Post Message
-        </Button>
-      </VStack>
-    </Box>
-  );
+				<Button type="submit" colorScheme="teal" disabled={!content.trim() || !decoration} w="full">
+					Post Message
+				</Button>
+			</VStack>
+		</Box>
+	);
 };
