@@ -124,21 +124,18 @@ This document breaks down the implementation tasks for the iCard project based o
 - [x] **Task 25: Create message API endpoints (High Priority)**
   - [x] `GET /api/trees/[id]/messages` - List messages
   - [x] `POST /api/trees/[id]/messages` - Add message
-  - [ ] `PATCH /api/trees/[id]/messages/[messageId]` - Edit message
-  - [ ] `DELETE /api/trees/[id]/messages/[messageId]` - Delete message
-- [ ] **Task 26: Implement real-time message updates**
-  - [ ] Set up WebSocket in `/lib/websocket.ts` (e.g., `ws`)
-  - [ ] Broadcast new messages to connected clients
+  - [x] `PATCH /api/trees/[id]/messages/[messageId]` - Edit message
+  - [x] `DELETE /api/trees/[id]/messages/[messageId]` - Delete message
 
 ### Frontend Message Components
 
 - [x] **Task 27: Create message components**
   - [x] `MessageList` in `/components/tree/MessageList.tsx` - Display messages
   - [x] `MessageForm` in `/components/tree/MessageForm.tsx` - Input form
-  - [x] `MessageCard` in `/components/tree/MessageCard.tsx` - Message ornament
-- [ ] **Task 28: Add rich text editor for messages**
-  - [ ] Integrate `@tiptap/react` in `MessageForm`
-  - [ ] Support bold, italic, and emojis
+  - [x] `MessageCard` in `/components/tree/MessageCard.tsx` - Message ornament with Edit/Delete support
+- [x] **Task 28: Add rich text editor for messages**
+  - [x] Integrate `@tiptap/react` in `MessageForm`
+  - [x] Support bold, italic, and emojis
 - [ ] **Task 29: Implement message positioning system**
   - [ ] Add drag-and-drop with `react-beautiful-dnd`
   - [ ] Validate positions within tree bounds
@@ -251,7 +248,7 @@ This document breaks down the implementation tasks for the iCard project based o
 - [x] **Phase 1: Project Setup & Infrastructure** (90% complete)
 - [ ] **Phase 2: Authentication System** (80% complete)
 - [ ] **Phase 3: Tree Management System**
-- [ ] **Phase 4: Message System**
+- [x] **Phase 4: Message System** (50% complete)
 - [ ] **Phase 5: UI/UX Implementation**
 - [ ] **Phase 6: Testing & Quality Assurance**
 - [ ] **Phase 7: Deployment & DevOps**

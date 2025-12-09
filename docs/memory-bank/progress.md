@@ -39,7 +39,7 @@
 
    - [x] Message creation
    - [x] Message decorations
-   - [ ] Message management
+   - [x] Message management (Edit/Delete)
    - [ ] Real-time updates
    - [ ] Message sharing
 

@@ -1,25 +1,25 @@
-import { Redis } from '@upstash/redis';
+// import { Redis } from '@upstash/redis';
 
 // Initialize Redis client
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || '',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
-});
+// const redis = new Redis({
+//   url: process.env.UPSTASH_REDIS_REST_URL || '',
+//   token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
+// });
 
 // Rate limit configurations
 const RATE_LIMITS = {
-  login: {
-    points: 100,
-    duration: 60 * 15, // 15 minutes
-  },
-  register: {
-    points: 100,
-    duration: 60, // 1 hour
-  },
-  api: {
-    points: 100,
-    duration: 60, // 1 minute
-  },
+	login: {
+		points: 100,
+		duration: 60 * 15, // 15 minutes
+	},
+	register: {
+		points: 100,
+		duration: 60, // 1 hour
+	},
+	api: {
+		points: 100,
+		duration: 60, // 1 minute
+	},
 };
 
 /**
@@ -29,9 +29,13 @@ const RATE_LIMITS = {
  * @returns True if the request is allowed, false if rate limited
  */
 export async function rateLimitRequest(
-  key: 'login' | 'register' | 'api',
-  ip: string
+	key: 'login' | 'register' | 'api',
+	ip: string
 ): Promise<boolean> {
+	// REDIS DISABLED as per user request
+	return true;
+
+	/*
   const limit = RATE_LIMITS[key];
   const redisKey = `${key}:${ip}`;
 
@@ -58,4 +62,5 @@ export async function rateLimitRequest(
     // In case of Redis errors, allow the request
     return true;
   }
+  */
 }

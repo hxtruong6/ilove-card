@@ -31,6 +31,8 @@ model User {
   accountStatus          String            @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "BANNED"
   accountStatusReason    String?
   accountStatusUpdatedAt DateTime?
+  failedLoginAttempts    Int               @default(0)
+  lockedUntil            DateTime?
   lastActiveTreeId       String?           @db.ObjectId
   lastActiveTree         Tree?             @relation("LastActiveTree", fields: [lastActiveTreeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   trees                  Tree[]
